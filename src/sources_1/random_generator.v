@@ -1,6 +1,6 @@
 `timescale 1ns / 1ps
 //////////////////////////////////////////////////////////////////////////////////
-// random u (.clk(), .rst(), .seed(), .rand_num());
+// random u (.clk(), .rstn(), .seed(), .rand_num());
 // R-bit random generator, seed != 0
 // Maker : CHA
 //
@@ -9,7 +9,7 @@
 
 module random(
     input clk,
-    input rst,
+    input rstn,
     input [19:0] seed,
     output [7:0] rand_num
     );
@@ -24,7 +24,7 @@ assign fd_back0[1] = sreg0[18] ^ sreg0[1];
 
 always @ (posedge clk)
 begin
-    if (rst) sreg0 <= seed;
+    if (~rstn) sreg0 <= seed;
     else sreg0 <= {fd_back0, sreg0[19:2]};
 end
 

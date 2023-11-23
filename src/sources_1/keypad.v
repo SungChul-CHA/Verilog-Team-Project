@@ -1,13 +1,13 @@
 //////////////////////////////////////////////////////////////////////////////////
-// keypad #(.CLK_KHZ()) u (.clk(), .rst(), .row(), .col(), .keypad_out());
+// keypad #(.CLK_KHZ()) u (.clk(), .rstn(), .row(), .col(), .keypad_out());
 // input : row : [7:4], output : col : [3:0], keypad_out : [4:0]
 // col 주고 받은 값에 따라 입력된 키 확인
 // 
 //////////////////////////////////////////////////////////////////////////////////
 
 
-module keypad (clk, rst, row, col, keypad_out); 
-    input clk, rst; 
+module keypad (clk, rstn, row, col, keypad_out); 
+    input clk, rstn; 
     input [3:0] row; 
     output reg [3:0] col; 
     output reg [4:0] keypad_out; 
@@ -17,8 +17,8 @@ module keypad (clk, rst, row, col, keypad_out);
     
     parameter CLK_KHZ = 25175; 
 
-    always @(posedge clk, posedge rst) begin
-        if (rst) begin
+    always @(posedge clk) begin
+        if (~rstn) begin
 		      sclk <= 0; 
 		      col <= 0; 
 		      keypad_out <= 0;

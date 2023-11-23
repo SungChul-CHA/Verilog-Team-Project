@@ -1,6 +1,6 @@
 module gen_counter_en #(parameter SIZE = 6000000) (
     input clk,
-    input rst,
+    input rstn,
     input en,
     output counter_en,
     output rx_read
@@ -8,8 +8,8 @@ module gen_counter_en #(parameter SIZE = 6000000) (
     
     reg [31:0] o;
     
-    always @(posedge clk or posedge rst) begin
-        if (rst) o <= 0;
+    always @(posedge clk) begin
+        if (~rstn) o <= 0;
         else if (en)
             if (o == SIZE-1) o <= 0;
             else o <= o + 1;

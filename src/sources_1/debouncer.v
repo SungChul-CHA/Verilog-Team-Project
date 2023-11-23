@@ -1,18 +1,18 @@
 `timescale 1ns / 1ps
 //////////////////////////////////////////////////////////////////////////////////
-// debounce u (.clk(), .rst(), .btn_in(), .btn_out(), .btn_out_pulse());
+// debounce u (.clk(), .rstn(), .btn_in(), .btn_out(), .btn_out_pulse());
 // stable signal = btn_in_d[3] = btn_out, stable 신호로 pulse 생성. 필요한거 갖다 쓰기
 // Maker : CHA
 //
 //////////////////////////////////////////////////////////////////////////////////
 
 
-module debounce(clk, rst, btn_in, btn_out, btn_out_pulse);
+module debounce(clk, rstn, btn_in, btn_out, btn_out_pulse);
 
     parameter SIZE = 16; //if pressed for 1/clk*2^(SIZE-1)sec, it can be debounced. 5.46ms for 6MHz
     parameter BTN_WIDTH = 5;
     
-    input clk, rst;
+    input clk, rstn;
     input [BTN_WIDTH-1:0] btn_in;
     output [BTN_WIDTH-1:0] btn_out, btn_out_pulse;
 
@@ -20,9 +20,9 @@ module debounce(clk, rst, btn_in, btn_out, btn_out_pulse);
     wire set; //sync reset to zero
     reg [SIZE-1:0] o = {SIZE{1'b0}}; //counter is initialized to 0
 
-    always @(posedge clk or posedge rst)
+    always @(posedge clk)
     begin
-        if (rst) begin
+        if (~rstn) begin
         btn_in_d[1] <= 0;
         btn_in_d[2] <= 0;
         btn_in_d[3] <= 0;
@@ -40,8 +40,8 @@ module debounce(clk, rst, btn_in, btn_out, btn_out_pulse);
     assign btn_out = btn_in_d[3]; //debounced button stable out
     assign set = (btn_in_d[1] != btn_in_d[2]) ? 1 : 0; //determine when to reset counter
     
-    always @(posedge clk or posedge rst) begin
-        if (rst) btn_in_d[4] <= 0;
+    always @(posedge clk) begin
+        if (~rstn) btn_in_d[4] <= 0;
         else btn_in_d[4] <= btn_in_d[3];
     end
 

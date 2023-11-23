@@ -1,6 +1,6 @@
 `timescale 1ns / 1ps
 //////////////////////////////////////////////////////////////////////////////////
-// uart_rx #(.BAUD_RATE(), .DATA_BIT(), .PARITY_BIT(), .STOP_BIT()) u (.clk(), .rst(), .uart_rxd(), .rx_busy(), .uart_VD(), .uart_rx_data());
+// uart_rx #(.BAUD_RATE(), .DATA_BIT(), .PARITY_BIT(), .STOP_BIT()) u (.clk(), .rstn(), .uart_rxd(), .rx_busy(), .uart_VD(), .uart_rx_data());
 // BUAD_RATE = 110, 300, 600, 1200, 2400, 4800, 9600, 14400, 19200, 28800, 38400, 56000, 57600, 115200
 // DATA_BIT : 5 ~ 9, PARITY_BIT = 0 : 없음, 1 : 홀수, 2 : 짝수, STOP_BIT = 1, 2
 // Maker : CHA
@@ -15,7 +15,7 @@ module uart_rx
     )
     (
     input clk,
-    input rst,
+    input rstn,
     input uart_rxd, 	    //수신 데이터
     output rx_busy,	    //idle 상태가 아닐때 '1' 
     output reg uart_VD,
@@ -44,8 +44,8 @@ module uart_rx
     localparam IDLE_ST = 3'd0, START_ST = 3'd1, 
     DATA_ST = 3'd2, PARITY_ST = 3'd3,STOP_ST = 3'd4;
     
-    always @ (posedge clk, posedge rst) begin
-        if (rst) c_state <= IDLE_ST;
+    always @ (posedge clk) begin
+        if (~rstn) c_state <= IDLE_ST;
         else if(uart_VD) c_state <= IDLE_ST;
         else c_state <= n_state;
     end
@@ -70,8 +70,8 @@ module uart_rx
             endcase
     end
     
-    always @ (posedge clk, posedge rst) begin
-        if (rst) uart_VD <= 1'b0;
+    always @ (posedge clk) begin
+        if (~rstn) uart_VD <= 1'b0;
         else if (rx_read & c_state == PARITY_ST)
             case (c_state)
                 IDLE_ST: uart_VD <= 1'b0;
@@ -87,8 +87,8 @@ module uart_rx
             endcase
     end
     
-    always @ (posedge clk, posedge rst) begin
-        if (rst) begin
+    always @ (posedge clk) begin
+        if (~rstn) begin
             data_finish <= 1'b0; stop_finish <= 1'b0;
             data_index <= 0; stop_index <= 0;
         end
@@ -115,13 +115,13 @@ module uart_rx
             endcase
     end
     
-    always @ (posedge clk, posedge rst) begin
-        if (rst) uart_rx_data <= 0;
+    always @ (posedge clk) begin
+        if (~rstn) uart_rx_data <= 0;
         else if (c_state == DATA_ST & rx_read) uart_rx_data[data_index] <= uart_rxd;
     end
     
     assign rx_busy = (c_state == IDLE_ST) ? 1'b0 : 1'b1;
 
-    gen_counter_en #(.SIZE(CLKS_PER_BIT)) gen_cnt_en_inst (.clk(clk), .rst(rst), .en(rx_busy), .counter_en(clk_b), .rx_read(rx_read));
+    gen_counter_en #(.SIZE(CLKS_PER_BIT)) gen_cnt_en_inst (.clk(clk), .rstn(rstn), .en(rx_busy), .counter_en(clk_b), .rx_read(rx_read));
 
 endmodule
