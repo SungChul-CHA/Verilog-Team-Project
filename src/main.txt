@@ -1,0 +1,47 @@
+
+word = 0;
+key = 0;
+value = 0;
+storage = (word, key, value)
+
+keyword = {'def, '}
+special_char = {'SP', 'CR', 'HT'}
+
+
+
+
+  
+
+8*1000 ram
+0x61
+0x20
+0x3D
+0x20
+0x34
+0x0D
+0x62
+0x20
+0x3D
+0x20
+0x37
+:
+
+
+buffer = 0x61
+0x20 -> delete
+0x3D
+-> 다음 글자 확인
+0x20 -> delete 
+0x34 -> 숫자 -> 저장 {0x61, i, 4} , i++
+buffer clear
+
+0x0D -> delete
+buffer = 0x62
+0x3D
+-> 다음 글자 확인
+
+
+
+
+
+
