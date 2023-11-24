@@ -55,7 +55,7 @@ Zynq-7000 SoC
 
 ## 화면 구상
 
-![sreen](src/image.png)
+![sreen](src/display.png)
 
 공의 좌표
 
