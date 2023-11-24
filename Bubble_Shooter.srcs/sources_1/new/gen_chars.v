@@ -1,6 +1,6 @@
 `timescale 1ns / 1ps
 //////////////////////////////////////////////////////////////////////////////////
-// geh_chars #(.MONITOR_WIDTH(), .MONITOR_HEIGHT(), .WORD_Y_SIZE(), .WORD_X_SIZE(), .TIMES(), .WIDTH(), .HEIGHT(), .LINE_SIZE(), .MENU_WIDTH(), .INNER_MENU_TOP(), .INNER_MENU_OFFSET(), .SCORE_MENU_X_L()) inst (clk, x, y, digit, font_bit, char_on);
+// geh_chars #(.WORD_Y_SIZE(), .WORD_X_SIZE(), .TIMES(), .SPACE(), .MONITOR_WIDTH(), .MONITOR_HEIGHT(), .WIDTH(), .HEIGHT(), .LINE_SIZE(), .INNER_MENU_OFFSET(), .MENU_WIDTH(), .INNER_MENU_Y(), .TOP(), .BOTTOM(), .MENU_X(), .INNER_MENU_X(), .SCORE_MENU_X()) inst (clk, x, y, digit, font_bit, char_on);
 // Maker : CHA
 // 
 //////////////////////////////////////////////////////////////////////////////////
@@ -15,16 +15,23 @@ module gen_chars(
     output char_on
     );
     
-    parameter MONITOR_WIDTH = 1024, MONITOR_HEIGHT = 768;
-    parameter WORD_Y_SIZE = 48, WORD_X_SIZE = 24, TIMES = 2;
-    parameter WIDTH = 20, HEIGHT = 45, LINE_SIZE = 3;
+    parameter WORD_Y_SIZE = 48, WORD_X_SIZE = 24, TIMES = 2, SPACE = 40;
     
+    parameter MONITOR_WIDTH = 1024, MONITOR_HEIGHT = 768;
+    
+    // offset
+    parameter WIDTH = 20, HEIGHT = 45, LINE_SIZE = 3;
+    parameter INNER_MENU_OFFSET = 5;
+    // adjust
     parameter MENU_WIDTH = 170;
-    parameter INNER_MENU_TOP = 200;
-
-    parameter INNER_MENU_OFFSET = 2;
-
-    parameter SCORE_MENU_X_L = MONITOR_WIDTH - WIDTH - LINE_SIZE - MENU_WIDTH - LINE_SIZE;
+    parameter INNER_MENU_Y = 200;
+    
+    parameter TOP = HEIGHT + LINE_SIZE;
+    parameter BOTTOM = MONITOR_HEIGHT - HEIGHT - LINE_SIZE;
+    parameter MENU_X = WIDTH + LINE_SIZE;
+    parameter INNER_MENU_X = MENU_X + INNER_MENU_OFFSET + LINE_SIZE;
+    parameter SCORE_MENU_X = MONITOR_WIDTH - WIDTH - LINE_SIZE - MENU_WIDTH;
+    
     
 
     wire [6:0] char_addr;
@@ -52,8 +59,8 @@ module gen_chars(
     
     // MENU
     wire [9:0] menu_x_l, menu_y_t;
-    assign menu_x_l = WIDTH + LINE_SIZE + 30; 
-    assign menu_y_t = HEIGHT + LINE_SIZE + HEIGHT + 5; 
+    assign menu_x_l = MENU_X + 30; 
+    assign menu_y_t = TOP + 20; 
     assign menu_on = (y>=menu_y_t && y<menu_y_t+WORD_Y_SIZE && x>=menu_x_l && x<menu_x_l+WORD_X_SIZE*4 + 3)? 1 : 0; 
     assign row_addr_m = y-menu_y_t >> TIMES;
     always @ (*) begin
@@ -66,8 +73,8 @@ module gen_chars(
     
     // Pause
     wire [9:0] pause_x_l, pause_y_t;
-    assign pause_x_l = WIDTH + LINE_SIZE + INNER_MENU_OFFSET + LINE_SIZE + 20; 
-    assign pause_y_t = INNER_MENU_TOP + 25; 
+    assign pause_x_l = INNER_MENU_X + 20; 
+    assign pause_y_t = INNER_MENU_Y + 25; 
     assign pause_on = (y>=pause_y_t && y<pause_y_t+WORD_Y_SIZE && x>=pause_x_l && x<pause_x_l+WORD_X_SIZE*5)? 1 : 0; 
     assign row_addr_p = y-pause_y_t >> TIMES;
     always @ (*) begin
@@ -81,8 +88,8 @@ module gen_chars(
     
     // Help
     wire [9:0] help_x_l, help_y_t;
-    assign help_x_l = WIDTH + LINE_SIZE + INNER_MENU_OFFSET + LINE_SIZE + 30; 
-    assign help_y_t = MONITOR_HEIGHT - HEIGHT - INNER_MENU_OFFSET - LINE_SIZE * 3 - WORD_Y_SIZE - 25; 
+    assign help_x_l = INNER_MENU_X + 30; 
+    assign help_y_t = BOTTOM - INNER_MENU_OFFSET - LINE_SIZE - WORD_Y_SIZE - 25; 
     assign help_on = (y>=help_y_t && y<help_y_t+WORD_Y_SIZE && x>=help_x_l && x<help_x_l+WORD_X_SIZE*4)? 1 : 0; 
     assign row_addr_h = y-help_y_t >> TIMES;
     always @ (*) begin
@@ -95,8 +102,8 @@ module gen_chars(
     
     // SCORE
     wire [9:0] score_x_l, score_y_t;
-    assign score_x_l = SCORE_MENU_X_L + LINE_SIZE + 25; 
-    assign score_y_t = HEIGHT + LINE_SIZE + 20; 
+    assign score_x_l = SCORE_MENU_X + 25; 
+    assign score_y_t = TOP + 20; 
     assign score_on = (y>=score_y_t && y<score_y_t+WORD_Y_SIZE && x>=score_x_l && x<score_x_l+WORD_X_SIZE*5)? 1 : 0; 
     assign row_addr_s = y-score_y_t >> TIMES;
     always @ (*) begin

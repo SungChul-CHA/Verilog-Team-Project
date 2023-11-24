@@ -18,30 +18,42 @@ module graph_mod(
     output [2:0] rgb
     );
     
-
-    localparam MONITOR_WIDTH = 1024, MONITOR_HEIGHT = 768;
-    localparam WORD_Y_SIZE = 48, WORD_X_SIZE = 24, TIMES = 2;
-    localparam SPACE = 40, WIDTH = 20, HEIGHT = 45, LINE_SIZE = 3;
+    // char size
+    localparam WORD_Y_SIZE = 48, WORD_X_SIZE = 24, TIMES = 2, SPACE = 40;
     
+    // ball
     localparam R = 17, BALLS_COLS = 18, ROOT_OFFSET = 13;
     
-    localparam MENU_WIDTH = 170;
-    localparam INNER_MENU_TOP = 200;
-    localparam SCORE_HEIGHT = 200;
-    
-    localparam BALL_X_INIT = 567, BALL_Y_INIT = 750;
-    
-    localparam GAME_X_L_OFFSET = 5;
-    localparam INNER_MENU_OFFSET = 2;
-    
-    localparam GAME_X_L = MENU_WIDTH + WIDTH + 4 * LINE_SIZE + GAME_X_L_OFFSET, GAME_WIDTH = R * (2 * (BALLS_COLS - 1) + 2);
-    localparam SCORE_MENU_X_L = MONITOR_WIDTH - WIDTH - LINE_SIZE - MENU_WIDTH - LINE_SIZE;
-    localparam GAME_TOP = HEIGHT + LINE_SIZE, GAME_BOTTOM = MONITOR_HEIGHT - HEIGHT - LINE_SIZE;
-    
-    
+    localparam BALL_X_INIT = 567, BALL_Y_INIT = 750;    
     localparam V = 22;
     
     localparam BALLS_ROWS = 10;
+    
+    //display
+    localparam MONITOR_WIDTH = 1024, MONITOR_HEIGHT = 768;
+    // offset
+    localparam WIDTH = 20, HEIGHT = 45, LINE_SIZE = 3;
+    localparam GAME_X_OFFSET = 8, INNER_MENU_OFFSET = 5;
+    // adjust
+    localparam MENU_WIDTH = 170;
+    localparam INNER_MENU_Y = 200;
+    localparam SCORE_MENU_HEIGHT = 200;
+    // frame
+    localparam TOP = HEIGHT + LINE_SIZE;
+    localparam BOTTOM = MONITOR_HEIGHT - HEIGHT - LINE_SIZE;
+    
+    localparam MENU_X = WIDTH + LINE_SIZE;
+    
+    localparam GAME_X = MENU_X + MENU_WIDTH + LINE_SIZE + GAME_X_OFFSET + LINE_SIZE;
+    localparam GAME_WIDTH = R * (2 * (BALLS_COLS - 1) + 2);
+    
+    localparam INNER_MENU_X = MENU_X + INNER_MENU_OFFSET + LINE_SIZE;
+    localparam INNER_MENU_WIDTH = MENU_WIDTH - 2*(INNER_MENU_OFFSET + LINE_SIZE);
+    localparam INNER_MENU_HEIGHT = MONITOR_HEIGHT - INNER_MENU_Y - HEIGHT - INNER_MENU_OFFSET - 3*LINE_SIZE;
+    
+    localparam SCORE_MENU_X = MONITOR_WIDTH - WIDTH - LINE_SIZE - MENU_WIDTH;
+    localparam SCORE_MENU_WIDTH = MENU_WIDTH;
+    
     
     wire [8:0] ball_x_odd[BALLS_COLS-1:0];
     wire [8:0] ball_x_even[BALLS_COLS-1:0];
@@ -50,11 +62,11 @@ module graph_mod(
     
     genvar n;
     for (n = 0; n < BALLS_COLS; n = n + 1) begin
-        assign ball_x_odd[n] = GAME_X_L + (2*n+1)*R;
+        assign ball_x_odd[n] = GAME_X + (2*n+1)*R;
     end
     
     for (n = 0; n < BALLS_COLS; n = n + 1) begin    
-        assign ball_x_even[n] = GAME_X_L + 2*(n+1)*R;
+        assign ball_x_even[n] = GAME_X + 2*(n+1)*R;
     end
     
     for (n = 0; n < BALLS_ROWS; n = n + 1) begin
