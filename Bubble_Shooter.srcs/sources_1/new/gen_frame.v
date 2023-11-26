@@ -24,7 +24,6 @@ module gen_frame (
     parameter INNER_MENU_Y = 200;
     parameter SCORE_MENU_HEIGHT = 200;
     
-    
     parameter TOP = HEIGHT + LINE_SIZE;
     parameter BOTTOM = MONITOR_HEIGHT - HEIGHT - LINE_SIZE;
     
