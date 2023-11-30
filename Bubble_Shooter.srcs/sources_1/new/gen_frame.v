@@ -41,7 +41,7 @@ module gen_frame (
     parameter SCORE_MENU_WIDTH = MENU_WIDTH;
     
     // Todo : change to F.F
-    reg game_frame_on, menu_frame_on, inner_menu_frame_on, score_frame_on;
+    wire game_frame_on, menu_frame_on, inner_menu_frame_on, score_frame_on;
     
     assign frame_on = {|{game_frame_on, menu_frame_on, inner_menu_frame_on, score_frame_on}};
     

@@ -91,21 +91,13 @@ module graph_mod(
     end
     
     
-    // init state
-    parameter START_LINE = 9;
-    reg [8:0] is_ball;
-    always @ (posedge clk) begin
-        if (~rstn) is_ball = START_LINE * BALLS_COLS;
-//        else if(ball_touch) is_ball = ;                                         // ball_touch = 사라지는 공
-    end
-    
+   
     
     
     ////////////////////////////////////////FSM
     parameter NEWGAME = 2'd0, PLAY = 2'd1, NEWBALL = 2'd2, GAMEOVER = 2'd3;
     
-    
-    reg score_clr;
+    reg score_clr, top_balls_clr;
     
     reg [1:0] c_state, n_state;
     
@@ -118,15 +110,16 @@ module graph_mod(
         case(c_state)
             NEWGAME: begin
                 score_clr = 1;
+                top_balls_clr = 1;
                 if (key) begin
                     n_state = PLAY;
                 end else n_state = NEWGAME;
                 
             end
             PLAY: begin
-            
-            end
+                        end
             NEWBALL: begin
+                
             
             end
             GAMEOVER: begin
@@ -138,11 +131,23 @@ module graph_mod(
     
     
     
-    
+    reg [19:0] score;
+    always @ (posedge clk) begin
+        if (~rstn) score <= 0;
+        else score <= 1;                    // score plus logic
+    end
     
     
     ////////////////////////////////////////FSM
     
+     reg [BALLS_COLS * BALLS_ROWS - 1:0] top_balls;
+    always @ (posedge clk) begin
+        if (~rstn) top_balls <= {68{1'b1}};
+        else if (key_pulse) begin
+            top_balls <= (top_balls << BALLS_COLS) + {BALLS_COLS{1'b1}};
+        end
+    end
+
     
     // ball_on_y[x]
     wire [BALLS_COLS-1:0] ball_on_0;
@@ -176,20 +181,52 @@ module graph_mod(
         assign ball_on_6[n] = ((x-ball_x_even[n])**2 + (y-ball_y[6])**2 <= R**2) ? 1 : 0;
         assign ball_on_7[n] = ((x-ball_x_odd[n])**2 + (y-ball_y[7])**2 <= R**2) ? 1 : 0;
         assign ball_on_8[n] = ((x-ball_x_even[n])**2 + (y-ball_y[8])**2 <= R**2) ? 1 : 0;
+        assign ball_on_9[n] = ((x-ball_x_even[n])**2 + (y-ball_y[8])**2 <= R**2) ? 1 : 0;
+        assign ball_on_10[n] = ((x-ball_x_even[n])**2 + (y-ball_y[8])**2 <= R**2) ? 1 : 0;
+        assign ball_on_11[n] = ((x-ball_x_even[n])**2 + (y-ball_y[8])**2 <= R**2) ? 1 : 0;
+        assign ball_on_12[n] = ((x-ball_x_even[n])**2 + (y-ball_y[8])**2 <= R**2) ? 1 : 0;
+        assign ball_on_13[n] = ((x-ball_x_even[n])**2 + (y-ball_y[8])**2 <= R**2) ? 1 : 0;
+        assign ball_on_14[n] = ((x-ball_x_even[n])**2 + (y-ball_y[8])**2 <= R**2) ? 1 : 0;
+        assign ball_on_15[n] = ((x-ball_x_even[n])**2 + (y-ball_y[8])**2 <= R**2) ? 1 : 0;
+        assign ball_on_16[n] = ((x-ball_x_even[n])**2 + (y-ball_y[8])**2 <= R**2) ? 1 : 0;
+        assign ball_on_17[n] = ((x-ball_x_even[n])**2 + (y-ball_y[8])**2 <= R**2) ? 1 : 0;
+        assign ball_on_18[n] = ((x-ball_x_even[n])**2 + (y-ball_y[8])**2 <= R**2) ? 1 : 0;        
+    end
+    
+    wire [BALLS_COLS-1:0] ball_on0, ball_on1, ball_on2, ball_on3, ball_on4, ball_on5, ball_on6, ball_on7, ball_on8, ball_on9, ball_on10, ball_on11, ball_on12, ball_on13, ball_on14, ball_on15, ball_on16, ball_on17, ball_on18;
+    for (n = 0; n < BALLS_COLS; n = n + 1) begin
+        assign ball_on0[n] = (ball_on_0[n] & top_balls[n]) ? 1 : 0;
+        assign ball_on1[n] = (ball_on_1[n] & top_balls[n + BALLS_COLS]) ? 1 : 0;
+        assign ball_on2[n] = (ball_on_2[n] & top_balls[n + 2*BALLS_COLS]) ? 1 : 0;
+        assign ball_on3[n] = (ball_on_3[n] & top_balls[n + 3*BALLS_COLS]) ? 1 : 0;
+        assign ball_on4[n] = (ball_on_4[n] & top_balls[n + 4*BALLS_COLS]) ? 1 : 0;
+        assign ball_on5[n] = (ball_on_5[n] & top_balls[n + 5*BALLS_COLS]) ? 1 : 0;
+        assign ball_on6[n] = (ball_on_6[n] & top_balls[n + 6*BALLS_COLS]) ? 1 : 0;
+        assign ball_on7[n] = (ball_on_7[n] & top_balls[n + 7*BALLS_COLS]) ? 1 : 0;
+        assign ball_on8[n] = (ball_on_8[n] & top_balls[n + 8*BALLS_COLS]) ? 1 : 0;
+        assign ball_on9[n] = (ball_on_9[n] & top_balls[n + 9*BALLS_COLS]) ? 1 : 0;
+        assign ball_on10[n] = (ball_on_10[n] & top_balls[n + 10*BALLS_COLS]) ? 1 : 0;
+        assign ball_on11[n] = (ball_on_11[n] & top_balls[n + 11*BALLS_COLS]) ? 1 : 0;
+        assign ball_on12[n] = (ball_on_12[n] & top_balls[n + 12*BALLS_COLS]) ? 1 : 0;
+        assign ball_on13[n] = (ball_on_13[n] & top_balls[n + 13*BALLS_COLS]) ? 1 : 0;
+        assign ball_on14[n] = (ball_on_14[n] & top_balls[n + 14*BALLS_COLS]) ? 1 : 0;
+        assign ball_on15[n] = (ball_on_15[n] & top_balls[n + 15*BALLS_COLS]) ? 1 : 0;
+        assign ball_on16[n] = (ball_on_16[n] & top_balls[n + 16*BALLS_COLS]) ? 1 : 0;
+        assign ball_on17[n] = (ball_on_17[n] & top_balls[n + 17*BALLS_COLS]) ? 1 : 0;
+        assign ball_on18[n] = (ball_on_18[n] & top_balls[n + 18*BALLS_COLS]) ? 1 : 0;
     end
     
     wire [BALLS_COLS-1:0] ball_on;
-    for (n = 0; n < BALLS_COLS; n = n + 1) begin
-        assign ball_on[n] = ({|{ball_on_0[n], ball_on_1[n], ball_on_2[n], ball_on_3[n], ball_on_4[n], ball_on_5[n], ball_on_6[n], ball_on_7[n], ball_on_8[n], ball_on_9[n], ball_on_10[n], ball_on_11[n], ball_on_12[n], ball_on_13[n], ball_on_14[n], ball_on_15[n], ball_on_16[n], ball_on_17[n], ball_on_18[n]}}) ? 1 : 0;
-    end
+    assign ball_on = ball_on0 | ball_on1 | ball_on2 | ball_on3 | ball_on4 | ball_on5 | ball_on6 | ball_on7 | ball_on8 | ball_on9 | ball_on10 | ball_on11 | ball_on12 | ball_on13 | ball_on14 | ball_on15 | ball_on16 | ball_on17 | ball_on18;
     
 
     wire sball_on;
     assign sball_on = ((x - current_ball_x)**2 + (y - current_ball_y)**2 <= R**2) ? 1 : 0;
     
+    
     gen_frame #(R, BALLS_COLS, MONITOR_WIDTH, MONITOR_HEIGHT, WIDTH, HEIGHT, LINE_SIZE, GAME_X_OFFSET, INNER_MENU_OFFSET, MENU_WIDTH, INNER_MENU_Y, SCORE_MENU_HEIGHT, TOP, BOTTOM, MENU_X, GAME_X, GAME_WIDTH, INNER_MENU_X, INNER_MENU_WIDTH, INNER_MENU_HEIGHT, SCORE_MENU_X, SCORE_MENU_WIDTH) gen_frame_inst (clk, x, y, frame_on);
     gen_chars #(WORD_Y_SIZE, WORD_X_SIZE, TIMES, SPACE, MONITOR_WIDTH, MONITOR_HEIGHT, WIDTH, HEIGHT, LINE_SIZE, INNER_MENU_OFFSET, MENU_WIDTH, INNER_MENU_Y, TOP, BOTTOM, MENU_X, INNER_MENU_X, SCORE_MENU_X) gen_chars_inst (clk, x, y, digit, font_bit, char_on);
-    ball_move #(R, BALLS_COLS, BALLS_ROWS, ROOT_OFFSET, BALL_X_INIT, BALL_Y_INIT, WIDTH, LINE_SIZE, GAME_X_OFFSET, MENU_WIDTH, MENU_X, GAME_X, GAME_WIDTH) ball_move_inst (clk, rstn, new_ball, x, y, key, current_ball_x, current_ball_y);
+    ball_move #(R, BALLS_COLS, BALLS_ROWS, ROOT_OFFSET, BALL_X_INIT, BALL_Y_INIT, WIDTH, LINE_SIZE, GAME_X_OFFSET, MENU_WIDTH, MENU_X, GAME_X, GAME_WIDTH) ball_move_inst (clk, rstn, new_ball, x, y, key, dout_sin, dout_cos, current_ball_x, current_ball_y, ball_angle);
     
     
     assign rgb = (frame_on) ? 3'b111 :
