@@ -1,6 +1,6 @@
 `timescale 1ns / 1ps
 //////////////////////////////////////////////////////////////////////////////////
-// geh_chars #(.WORD_Y_SIZE(), .WORD_X_SIZE(), .TIMES(), .SPACE(), .MONITOR_WIDTH(), .MONITOR_HEIGHT(), .WIDTH(), .HEIGHT(), .LINE_SIZE(), .INNER_MENU_OFFSET(), .MENU_WIDTH(), .INNER_MENU_Y(), .TOP(), .BOTTOM(), .MENU_X(), .INNER_MENU_X(), .SCORE_MENU_X()) inst (clk, x, y, digit, font_bit, char_on);
+// gen_chars #(WORD_Y_SIZE, WORD_X_SIZE, TIMES, SPACE, MONITOR_WIDTH, MONITOR_HEIGHT, WIDTH, HEIGHT, LINE_SIZE, INNER_MENU_OFFSET, MENU_WIDTH, INNER_MENU_Y, TOP, BOTTOM, MENU_X, INNER_MENU_X, SCORE_MENU_X) gen_chars_inst (clk, x, y, digit, font_bit, char_on);
 // Maker : CHA
 // 
 //////////////////////////////////////////////////////////////////////////////////
@@ -23,7 +23,7 @@ module gen_chars(
     parameter WIDTH = 20, HEIGHT = 45, LINE_SIZE = 3;
     parameter INNER_MENU_OFFSET = 5;
     // adjust
-    parameter MENU_WIDTH = 170;
+    parameter MENU_WIDTH = 174;
     parameter INNER_MENU_Y = 200;
     
     parameter TOP = HEIGHT + LINE_SIZE;
@@ -44,7 +44,7 @@ module gen_chars(
     
     wire [7:0] font_word;
     wire [10:0] rom_addr;
-
+    
     assign char_on = {|{menu_on, pause_on, help_on, score_on}};
     
     font_rom_vhd font_rom_inst (clk, rom_addr, font_word);
@@ -70,6 +70,7 @@ module gen_chars(
         else if (x>=menu_x_l+WORD_X_SIZE*3 + 3 && x<menu_x_l+WORD_X_SIZE*4 + 3) begin bit_addr_m = (x-menu_x_l-WORD_X_SIZE*3 - 3) >> TIMES; char_addr_m = 7'h55; end // U
         else begin bit_addr_m = 0; char_addr_m = 0; end                         
     end
+    
     
     // Pause
     wire [9:0] pause_x_l, pause_y_t;

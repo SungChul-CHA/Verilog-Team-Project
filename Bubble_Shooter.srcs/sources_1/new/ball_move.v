@@ -1,6 +1,6 @@
 `timescale 1ns / 1ps
 //////////////////////////////////////////////////////////////////////////////////
-// ball_move #(.(R), .BALLS_COLS(), .BALLS_ROWS(), .ROOT_OFFSET(), .BALL_X_INIT(), .BALL_Y_INIT(), .WIDTH(), .LINE_SIZE(), .GAME_X_OFFSET(), .MENU_WIDTH(), .MENU_X(), .GAME_X(), .GAME_WIDTH()) inst (.clk(), .rstn(), .new_ball(), .x(), .y(), .key(), .current_ball_x(), .current_ball_y());
+// ball_move #(R, BALLS_COLS, BALLS_ROWS, ROOT_OFFSET, BALL_X_INIT, BALL_Y_INIT, WIDTH, LINE_SIZE, GAME_X_OFFSET, MENU_WIDTH, MENU_X, GAME_X, GAME_WIDTH) ball_move_inst (clk, rstn, new_ball, x, y, key, current_ball_x, current_ball_y);
 // maekr : CHA
 //
 //////////////////////////////////////////////////////////////////////////////////
@@ -17,16 +17,16 @@ module ball_move(
         output [10:0] current_ball_y
     );
     
-    parameter R = 17, BALLS_COLS = 18, BALLS_ROWS = 10, ROOT_OFFSET = 13;
+    parameter R = 17, BALLS_COLS = 17, BALLS_ROWS = 10, ROOT_OFFSET = 13;
     
     parameter BALL_X_INIT = 567, BALL_Y_INIT = 750;
     
     parameter WIDTH = 20, LINE_SIZE = 3;
-    parameter GAME_X_OFFSET = 8;
-    parameter MENU_WIDTH = 170;
+    parameter GAME_X_OFFSET = 10;
+    parameter MENU_WIDTH = 174;
     parameter MENU_X = WIDTH + LINE_SIZE;
     parameter GAME_X = MENU_X + MENU_WIDTH + LINE_SIZE + GAME_X_OFFSET + LINE_SIZE;
-    parameter GAME_WIDTH = R * (2 * (BALLS_COLS - 1) + 2);
+    parameter GAME_WIDTH = 2 * R * BALLS_COLS + 2 * R;
     
     reg [10:0] current_ball_x, current_ball_y;
     reg [10:0] next_ball_x, next_ball_y;
@@ -72,6 +72,8 @@ module ball_move(
     end
 
     always @(posedge clk) begin
+        current_ball_x <= BALL_X_INIT;
+        current_ball_y <= BALL_Y_INIT; 
         if (~rstn) begin
             current_ball_x <= BALL_X_INIT; 
             current_ball_y <= BALL_Y_INIT;

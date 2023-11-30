@@ -1,7 +1,8 @@
 `timescale 1ns / 1ps
 //////////////////////////////////////////////////////////////////////////////////
-// gen_frame #(.R(), .BALLS_COLS(), .MONITOR_WIDTH(), .MONITOR_HEIGHT(), .WIDTH(), .HEIGHT(), .LINE_SIZE(), .GAME_X_OFFSET(), .INNER_MENU_OFFSET(), .MENU_WIDTH(), .INNER_MENU_Y(), .SCORE_MENU_HEIGHT(), .TOP(), .BOTTOM(), .MENU_X(), .GAME_X(), .GAME_WIDTH(), .INNER_MENU_X(), .INNER_MENU_WIDTH(), .INNER_MENU_HEIGHT(), .SCORE_MENU_X(), .SCORE_MENU_WIDTH()) inst (clk, x, y, frame_on);
+// gen_frame #(R, BALLS_COLS, MONITOR_WIDTH, MONITOR_HEIGHT, WIDTH, HEIGHT, LINE_SIZE, GAME_X_OFFSET, INNER_MENU_OFFSET, MENU_WIDTH, INNER_MENU_Y, SCORE_MENU_HEIGHT, TOP, BOTTOM, MENU_X, GAME_X, GAME_WIDTH, INNER_MENU_X, INNER_MENU_WIDTH, INNER_MENU_HEIGHT, SCORE_MENU_X, SCORE_MENU_WIDTH) gen_frame_inst (clk, x, y, frame_on);
 // Maker : CHA
+// Please edit graph_mod localparam values if you need to change the outfit of game
 // 
 //////////////////////////////////////////////////////////////////////////////////
 
@@ -13,14 +14,14 @@ module gen_frame (
     output frame_on
     );
     
-    parameter R = 17, BALLS_COLS = 18;
+    parameter R = 17, BALLS_COLS = 17;
     
     parameter MONITOR_WIDTH = 1024, MONITOR_HEIGHT = 768;
     // offset
     parameter WIDTH = 20, HEIGHT = 45, LINE_SIZE = 3;
-    parameter GAME_X_OFFSET = 8, INNER_MENU_OFFSET = 5;
+    parameter GAME_X_OFFSET = 10, INNER_MENU_OFFSET = 5;
     // adjust
-    parameter MENU_WIDTH = 170;
+    parameter MENU_WIDTH = 174;
     parameter INNER_MENU_Y = 200;
     parameter SCORE_MENU_HEIGHT = 200;
     
@@ -30,7 +31,7 @@ module gen_frame (
     parameter MENU_X = WIDTH + LINE_SIZE;
     
     parameter GAME_X = MENU_X + MENU_WIDTH + LINE_SIZE + GAME_X_OFFSET + LINE_SIZE;
-    parameter GAME_WIDTH = R * (2 * (BALLS_COLS - 1) + 2);
+    parameter GAME_WIDTH = 2 * R * BALLS_COLS + R;
     
     parameter INNER_MENU_X = MENU_X + INNER_MENU_OFFSET + LINE_SIZE;
     parameter INNER_MENU_WIDTH = MENU_WIDTH - 2*(INNER_MENU_OFFSET + LINE_SIZE);
@@ -39,8 +40,8 @@ module gen_frame (
     parameter SCORE_MENU_X = MONITOR_WIDTH - WIDTH - LINE_SIZE - MENU_WIDTH;
     parameter SCORE_MENU_WIDTH = MENU_WIDTH;
     
-    
-    wire game_frame_on, menu_frame_on, inner_menu_frame_on, score_frame_on;
+    // Todo : change to F.F
+    reg game_frame_on, menu_frame_on, inner_menu_frame_on, score_frame_on;
     
     assign frame_on = {|{game_frame_on, menu_frame_on, inner_menu_frame_on, score_frame_on}};
     

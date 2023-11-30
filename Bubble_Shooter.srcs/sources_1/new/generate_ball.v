@@ -21,6 +21,16 @@
 
 
 module generate_ball(
-
+    input clk,
+    input rstn,
+    input row_num,
+    output ball_on
     );
+    
+//    assign ball_on = () ? 1 : 0;
+    
+    
+    
+    
+    
 endmodule
