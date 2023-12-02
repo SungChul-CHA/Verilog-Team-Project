@@ -21,7 +21,7 @@ module gen_frame (
     parameter WIDTH = 20, HEIGHT = 45, LINE_SIZE = 3;
     parameter GAME_X_OFFSET = 10, INNER_MENU_OFFSET = 5;
     // adjust
-    parameter MENU_WIDTH = 174;
+    parameter MENU_WIDTH = 200;
     parameter INNER_MENU_Y = 200;
     parameter SCORE_MENU_HEIGHT = 200;
     

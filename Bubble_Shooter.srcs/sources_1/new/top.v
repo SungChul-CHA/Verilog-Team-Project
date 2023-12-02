@@ -26,6 +26,9 @@
 // 12/01 CHA
 // Change sin_unsigne_8x81 to sin_unsigned_8x81
 // Delete useless comment on line 83
+//
+// 12/03 CHA
+// Move tri module in ball_move module
 // 
 // 
 //////////////////////////////////////////////////////////////////////////////
@@ -50,7 +53,6 @@ module top(
     wire [2:0] rgb;
     wire video_on;
     
-    wire ball_angle;
     
     assign rstn = (~reset_poweron) | locked;
     
@@ -67,18 +69,8 @@ module top(
     // color : 4 -> rand_num bits : 2, color : 3 -> rand_num bits : 3, color : 6 -> rand_num bits : 6
     random #(6) random_inst(clk_vga, rstn, 20'd1106, rand_num);
     
-    graph_mod graph_inst(clk_vga, rstn, x, y, uart_rx_data, key, key_pulse, rand_num, dout_cos, dout_sin, rgb, ball_angle);
+    graph_mod graph_inst(clk_vga, rstn, x, y, uart_rx_data, key, key_pulse, rand_num, rgb);
     sync_mod sync_inst (clk_vga, rstn, x, y, video_on, vsync, hsync);
 
-    // ball control
-    wire signed [7:0] dout_cos, dout_sin;
-    wire [6:0] addr;
-    wire [7:0] din;  
-    wire [0:0] we; 
-    
-    assign addr= ball_angle;
-    
-    sin_unsigned_8x81 sin_inst(clk_vga, we, addr, din, dout_sin);
-    cos_signed_8x81 cos_inst(clk_vga, we, addr, din, dout_cos);
     
 endmodule

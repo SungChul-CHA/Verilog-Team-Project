@@ -1,6 +1,6 @@
 `timescale 1ns / 1ps
 //////////////////////////////////////////////////////////////////////////////////
-// graph_mod (clk_vga, rstn, x, y, uart_rx_data, key, key_pulse, rand_num, dout_sin, dout_cos, rgb, ball_angle);
+// graph_mod graph_inst(clk_vga, rstn, x, y, uart_rx_data, key, key_pulse, rand_num, rgb);
 // Containing Codes are below
 // 1. coordinate
 // 2. FSM
@@ -41,9 +41,7 @@ module graph_mod(
     input [4:0] key,
     input [4:0] key_pulse,
     input [5:0] rand_num,
-    input signed [7:0] dout_sin, dout_cos,
-    output [2:0] rgb,
-    output [6:0] ball_angle
+    output [2:0] rgb
     );
     
     // RGBCMY = rand_num
@@ -52,18 +50,16 @@ module graph_mod(
     localparam WORD_Y_SIZE = 48, WORD_X_SIZE = 24, TIMES = 2, SPACE = 40;
     
     // ball
-    localparam R = 17, BALLS_COLS = 17, BALLS_ROWS = 19, ROOT_OFFSET = 13;
-    
-    localparam BALL_X_INIT = 567, BALL_Y_INIT = 750;
+    localparam R = 17, BALLS_COLS = 16, BALLS_ROWS = 19, ROOT_OFFSET = 13;
     localparam V = 22;
     
     //display
     localparam MONITOR_WIDTH = 1024, MONITOR_HEIGHT = 768;
     // offset
     localparam WIDTH = 20, HEIGHT = 45, LINE_SIZE = 3;
-    localparam GAME_X_OFFSET = 10, INNER_MENU_OFFSET = 5;
+    localparam GAME_X_OFFSET = 15, INNER_MENU_OFFSET = 5;
     // adjust
-    localparam MENU_WIDTH = 174;
+    localparam MENU_WIDTH = 200;
     localparam INNER_MENU_Y = 200;
     localparam SCORE_MENU_HEIGHT = 200;
     // frame
@@ -79,9 +75,12 @@ module graph_mod(
     localparam INNER_MENU_WIDTH = MENU_WIDTH - 2*(INNER_MENU_OFFSET + LINE_SIZE);
     localparam INNER_MENU_HEIGHT = MONITOR_HEIGHT - INNER_MENU_Y - HEIGHT - INNER_MENU_OFFSET - 3*LINE_SIZE;
     
-    localparam SCORE_MENU_X = MONITOR_WIDTH - WIDTH - LINE_SIZE - MENU_WIDTH;
-    localparam SCORE_MENU_WIDTH = MENU_WIDTH;
+    localparam SCORE_MENU_WIDTH = 174;
+    localparam SCORE_MENU_X = MONITOR_WIDTH - WIDTH - LINE_SIZE - SCORE_MENU_WIDTH;
     
+    
+    // ball
+    localparam BALL_X_INIT = GAME_X + GAME_WIDTH / 2, BALL_Y_INIT = BOTTOM - R;
     
     // coordinate
     reg [9:0] ball_x_odd[BALLS_COLS-1:0];
@@ -122,14 +121,14 @@ module graph_mod(
 //////////////////////////////////////////////////////////////////////////////////top_balls_on
     reg [BALLS_COLS * BALLS_ROWS - 1:0] top_balls_num;
     always @ (posedge clk) begin
-        if (~rstn) top_balls_num <= {68{1'b1}};
-        else if (key_pulse) begin
+        if (~rstn) top_balls_num <= {64{1'b1}};
+        else if (key_pulse == 5'h1D) begin
             top_balls_num <= (top_balls_num << BALLS_COLS) + {BALLS_COLS{1'b1}};
         end
     end
 
     // bally[x]
-    reg [BALLS_COLS-1:0] ball0;
+    wire [BALLS_COLS-1:0] ball0;
     wire [BALLS_COLS-1:0] ball1;
     wire [BALLS_COLS-1:0] ball2;
     wire [BALLS_COLS-1:0] ball3;
@@ -151,11 +150,7 @@ module graph_mod(
 
     // ball init
     for (n = 0; n < BALLS_COLS; n = n + 1) begin
-        always @ (posedge clk) begin
-            if (~rstn) ball0[n] <= 0;
-            else if ((x-ball_x_even[n])**2 + (y-ball_y[0])**2 <= R**2) ball0[n] <= 1;
-            else ball0[n] <= 0;
-        end
+        assign ball0[n] = ((x-ball_x_even[n])**2 + (y-ball_y[0])**2 <= R**2) ? 1 : 0;
         assign ball1[n] = ((x-ball_x_odd[n])**2 + (y-ball_y[1])**2 <= R**2) ? 1 : 0;
         assign ball2[n] = ((x-ball_x_even[n])**2 + (y-ball_y[2])**2 <= R**2) ? 1 : 0;
         assign ball3[n] = ((x-ball_x_odd[n])**2 + (y-ball_y[3])**2 <= R**2) ? 1 : 0;
@@ -164,16 +159,16 @@ module graph_mod(
         assign ball6[n] = ((x-ball_x_even[n])**2 + (y-ball_y[6])**2 <= R**2) ? 1 : 0;
         assign ball7[n] = ((x-ball_x_odd[n])**2 + (y-ball_y[7])**2 <= R**2) ? 1 : 0;
         assign ball8[n] = ((x-ball_x_even[n])**2 + (y-ball_y[8])**2 <= R**2) ? 1 : 0;
-        assign ball9[n] = ((x-ball_x_even[n])**2 + (y-ball_y[8])**2 <= R**2) ? 1 : 0;
-        assign ball10[n] = ((x-ball_x_even[n])**2 + (y-ball_y[8])**2 <= R**2) ? 1 : 0;
-        assign ball11[n] = ((x-ball_x_even[n])**2 + (y-ball_y[8])**2 <= R**2) ? 1 : 0;
-        assign ball12[n] = ((x-ball_x_even[n])**2 + (y-ball_y[8])**2 <= R**2) ? 1 : 0;
-        assign ball13[n] = ((x-ball_x_even[n])**2 + (y-ball_y[8])**2 <= R**2) ? 1 : 0;
-        assign ball14[n] = ((x-ball_x_even[n])**2 + (y-ball_y[8])**2 <= R**2) ? 1 : 0;
-        assign ball15[n] = ((x-ball_x_even[n])**2 + (y-ball_y[8])**2 <= R**2) ? 1 : 0;
-        assign ball16[n] = ((x-ball_x_even[n])**2 + (y-ball_y[8])**2 <= R**2) ? 1 : 0;
-        assign ball17[n] = ((x-ball_x_even[n])**2 + (y-ball_y[8])**2 <= R**2) ? 1 : 0;
-        assign ball18[n] = ((x-ball_x_even[n])**2 + (y-ball_y[8])**2 <= R**2) ? 1 : 0;        
+        assign ball9[n] = ((x-ball_x_odd[n])**2 + (y-ball_y[9])**2 <= R**2) ? 1 : 0;
+        assign ball10[n] = ((x-ball_x_even[n])**2 + (y-ball_y[10])**2 <= R**2) ? 1 : 0;
+        assign ball11[n] = ((x-ball_x_odd[n])**2 + (y-ball_y[11])**2 <= R**2) ? 1 : 0;
+        assign ball12[n] = ((x-ball_x_even[n])**2 + (y-ball_y[12])**2 <= R**2) ? 1 : 0;
+        assign ball13[n] = ((x-ball_x_odd[n])**2 + (y-ball_y[13])**2 <= R**2) ? 1 : 0;
+        assign ball14[n] = ((x-ball_x_even[n])**2 + (y-ball_y[14])**2 <= R**2) ? 1 : 0;
+        assign ball15[n] = ((x-ball_x_odd[n])**2 + (y-ball_y[15])**2 <= R**2) ? 1 : 0;
+        assign ball16[n] = ((x-ball_x_even[n])**2 + (y-ball_y[16])**2 <= R**2) ? 1 : 0;
+        assign ball17[n] = ((x-ball_x_odd[n])**2 + (y-ball_y[17])**2 <= R**2) ? 1 : 0;
+        assign ball18[n] = ((x-ball_x_even[n])**2 + (y-ball_y[18])**2 <= R**2) ? 1 : 0;        
     end
     
     // ball_on y[x]
@@ -244,7 +239,30 @@ module graph_mod(
         endcase
     end
 //////////////////////////////////////////////////////////////////////////////////FSM
+
+    reg control_en;
+    always @ (posedge clk) begin
+        if (~rstn) control_en <= 0;
+        else if(c_state == NEWBALL) control_en <= 1;
+        else control_en <= 0;
+    end
+
+
+    reg [6:0] ball_angle, ball_control;
+    initial begin
+        ball_control = 40;
+    end
     
+    always @(posedge clk) begin
+        if(~rstn) ball_angle <= 40;
+        else ball_angle <= ball_control;
+    end
+  
+    always @ (*) begin
+        if (key_pulse == 5'h14 && ball_control > 0) ball_control = ball_control - 1;
+        else if (key_pulse == 5'h16 && ball_control < 80) ball_control = ball_control + 1;
+        else ball_control = ball_control;
+    end
     
     reg [19:0] score;
     always @ (posedge clk) begin
@@ -255,20 +273,18 @@ module graph_mod(
     
     
     
-
-    wire sball_on;
-    assign sball_on = ((x - current_ball_x)**2 + (y - current_ball_y)**2 <= R**2) ? 1 : 0;
-    
-    
-    
     gen_frame #(R, BALLS_COLS, MONITOR_WIDTH, MONITOR_HEIGHT, WIDTH, HEIGHT, LINE_SIZE, GAME_X_OFFSET, INNER_MENU_OFFSET, MENU_WIDTH, INNER_MENU_Y, SCORE_MENU_HEIGHT, TOP, BOTTOM, MENU_X, GAME_X, GAME_WIDTH, INNER_MENU_X, INNER_MENU_WIDTH, INNER_MENU_HEIGHT, SCORE_MENU_X, SCORE_MENU_WIDTH) gen_frame_inst (clk, x, y, frame_on);
     gen_chars #(WORD_Y_SIZE, WORD_X_SIZE, TIMES, SPACE, MONITOR_WIDTH, MONITOR_HEIGHT, WIDTH, HEIGHT, LINE_SIZE, INNER_MENU_OFFSET, MENU_WIDTH, INNER_MENU_Y, TOP, BOTTOM, MENU_X, INNER_MENU_X, SCORE_MENU_X) gen_chars_inst (clk, x, y, digit, font_bit, char_on);
-    ball_move #(R, BALLS_COLS, BALLS_ROWS, ROOT_OFFSET, BALL_X_INIT, BALL_Y_INIT, WIDTH, LINE_SIZE, GAME_X_OFFSET, MENU_WIDTH, MENU_X, GAME_X, GAME_WIDTH) ball_move_inst (clk, rstn, new_ball, x, y, key, dout_sin, dout_cos, current_ball_x, current_ball_y, ball_angle);
+    ball_move #(R, BALLS_COLS, BALLS_ROWS, ROOT_OFFSET, MONITOR_HEIGHT, WIDTH, HEIGHT, LINE_SIZE, GAME_X_OFFSET, MENU_WIDTH, MENU_X, GAME_X, GAME_WIDTH, BOTTOM, BALL_X_INIT, BALL_Y_INIT) ball_move_inst (clk, rstn, new_ball, x, y, key, ball_angle, current_ball_x, current_ball_y, sball_on);
+    gen_line gen_line_inst (clk, x, y, ball_angle, line_bit, line_on);
+    
+    
     
     
     assign rgb = (frame_on) ? 3'b111 :
                 (font_bit & char_on) ? 3'b111 :
                 ({|{ball_on}}) ? 3'b011 :
+                (line_bit & line_on) ? 3'b111 :
                 (sball_on) ? 3'b101 : 3'b000;
     
 endmodule

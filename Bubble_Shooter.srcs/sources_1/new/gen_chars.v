@@ -3,6 +3,8 @@
 // gen_chars #(WORD_Y_SIZE, WORD_X_SIZE, TIMES, SPACE, MONITOR_WIDTH, MONITOR_HEIGHT, WIDTH, HEIGHT, LINE_SIZE, INNER_MENU_OFFSET, MENU_WIDTH, INNER_MENU_Y, TOP, BOTTOM, MENU_X, INNER_MENU_X, SCORE_MENU_X) gen_chars_inst (clk, x, y, digit, font_bit, char_on);
 // Maker : CHA
 // (11.30) menu 수정 & score 추가 by min
+// OPTION 수정
+//
 //////////////////////////////////////////////////////////////////////////////////
 
 
@@ -35,7 +37,7 @@ module gen_chars(
     
 //
     wire [6:0] char_addr;
-     reg [6:0] char_addr_m, char_addr_p, char_addr_p1,char_addr_e, char_addr_o, char_addr_h, char_addr_s, char_addr_n;
+    reg [6:0] char_addr_m, char_addr_p, char_addr_p1,char_addr_e, char_addr_o, char_addr_h, char_addr_s, char_addr_n;
     wire [2:0] bit_addr;
     reg [2:0] bit_addr_m, bit_addr_p, bit_addr_p1,bit_addr_e, bit_addr_o, bit_addr_h, bit_addr_s, bit_addr_n;
     wire [3:0] row_addr;
@@ -120,7 +122,7 @@ module gen_chars(
     wire [9:0] option_x_l, option_y_t;
     assign option_x_l = INNER_MENU_X + 20; 
     assign option_y_t = INNER_MENU_Y + 325; 
-    assign option_on = (y>=option_y_t && y<option_y_t+WORD_Y_SIZE && x>=option_x_l && x<option_x_l+WORD_X_SIZE*5)? 1 : 0; 
+    assign option_on = (y>=option_y_t && y<option_y_t+WORD_Y_SIZE && x>=option_x_l && x<option_x_l+WORD_X_SIZE*6)? 1 : 0; 
     assign row_addr_o = y-option_y_t >> TIMES;
     always @ (*) begin
         if (x>=option_x_l+WORD_X_SIZE*0 && x<option_x_l+WORD_X_SIZE*1) begin bit_addr_o = (x-option_x_l-WORD_X_SIZE*0) >> TIMES; char_addr_o = 7'h4f; end // O
