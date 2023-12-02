@@ -1,7 +1,7 @@
 Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
 -------------------------------------------------------------------------------------------------
 | Tool Version : Vivado v.2022.2 (win64) Build 3671981 Fri Oct 14 05:00:03 MDT 2022
-| Date         : Thu Nov 30 22:02:28 2023
+| Date         : Sat Dec  2 22:15:35 2023
 | Host         : TFG5276XG running 64-bit major release  (build 9200)
 | Command      : report_utilization -file top_utilization_synth.rpt -pb top_utilization_synth.pb
 | Design       : top
@@ -31,11 +31,11 @@ Table of Contents
 +-------------------------+------+-------+------------+-----------+-------+
 |        Site Type        | Used | Fixed | Prohibited | Available | Util% |
 +-------------------------+------+-------+------------+-----------+-------+
-| Slice LUTs*             | 6699 |     0 |          0 |     53200 | 12.59 |
-|   LUT as Logic          | 6699 |     0 |          0 |     53200 | 12.59 |
+| Slice LUTs*             | 7720 |     0 |          0 |     53200 | 14.51 |
+|   LUT as Logic          | 7720 |     0 |          0 |     53200 | 14.51 |
 |   LUT as Memory         |    0 |     0 |          0 |     17400 |  0.00 |
-| Slice Registers         |  119 |     0 |          0 |    106400 |  0.11 |
-|   Register as Flip Flop |  119 |     0 |          0 |    106400 |  0.11 |
+| Slice Registers         |  120 |     0 |          0 |    106400 |  0.11 |
+|   Register as Flip Flop |  120 |     0 |          0 |    106400 |  0.11 |
 |   Register as Latch     |    0 |     0 |          0 |    106400 |  0.00 |
 | F7 Muxes                |   13 |     0 |          0 |     26600 |  0.05 |
 | F8 Muxes                |    5 |     0 |          0 |     13300 |  0.04 |
@@ -59,7 +59,7 @@ Warning! LUT value is adjusted to account for LUT combining.
 | 0     |          Yes |           - |          Set |
 | 0     |          Yes |           - |        Reset |
 | 0     |          Yes |         Set |            - |
-| 119   |          Yes |       Reset |            - |
+| 120   |          Yes |       Reset |            - |
 +-------+--------------+-------------+--------------+
 
 
@@ -82,8 +82,8 @@ Warning! LUT value is adjusted to account for LUT combining.
 +----------------+------+-------+------------+-----------+-------+
 |    Site Type   | Used | Fixed | Prohibited | Available | Util% |
 +----------------+------+-------+------------+-----------+-------+
-| DSPs           |  132 |     0 |          0 |       220 | 60.00 |
-|   DSP48E1 only |  132 |       |            |           |       |
+| DSPs           |  135 |     0 |          0 |       220 | 61.36 |
+|   DSP48E1 only |  135 |       |            |           |       |
 +----------------+------+-------+------------+-----------+-------+
 
 
@@ -149,14 +149,14 @@ Warning! LUT value is adjusted to account for LUT combining.
 +----------+------+---------------------+
 | Ref Name | Used | Functional Category |
 +----------+------+---------------------+
-| LUT2     | 2928 |                 LUT |
-| LUT4     | 2334 |                 LUT |
-| LUT3     | 2050 |                 LUT |
-| CARRY4   | 1216 |          CarryLogic |
-| LUT6     |  843 |                 LUT |
-| LUT5     |  600 |                 LUT |
-| DSP48E1  |  132 |    Block Arithmetic |
-| FDRE     |  119 |        Flop & Latch |
+| LUT2     | 3368 |                 LUT |
+| LUT4     | 2708 |                 LUT |
+| LUT3     | 2403 |                 LUT |
+| CARRY4   | 1423 |          CarryLogic |
+| LUT6     |  958 |                 LUT |
+| LUT5     |  649 |                 LUT |
+| DSP48E1  |  135 |    Block Arithmetic |
+| FDRE     |  120 |        Flop & Latch |
 | OBUF     |   18 |                  IO |
 | MUXF7    |   13 |               MuxFx |
 | MUXF8    |    5 |               MuxFx |
@@ -168,11 +168,13 @@ Warning! LUT value is adjusted to account for LUT combining.
 8. Black Boxes
 --------------
 
-+-----------+------+
-|  Ref Name | Used |
-+-----------+------+
-| clk_wiz_0 |    1 |
-+-----------+------+
++-------------------+------+
+|      Ref Name     | Used |
++-------------------+------+
+| sin_unsigned_8x81 |    1 |
+| cos_signed_8x81   |    1 |
+| clk_wiz_0         |    1 |
++-------------------+------+
 
 
 9. Instantiated Netlists
